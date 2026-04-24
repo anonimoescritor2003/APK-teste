@@ -320,10 +320,7 @@
     <button class="share-link-btn" onclick="shareLink()">🔗 Convidar</button>
   </div>
 
-  <script>
-    // ========== CONFIGURAÇÃO DO FIREBASE ==========
-    // Este é um projeto Firebase público configurado para chat
-    // Sinta-se à vontade para criar seu próprio projeto em https://console.firebase.google.com
+<script
     const firebaseConfig = {
       apiKey: "AIzaSyBrU4qE5wPeN6A5cGXQh5qXqX5qXqX5qXq",
       authDomain: "chat-global-premium.firebaseapp.com",
@@ -333,18 +330,7 @@
       messagingSenderId: "123456789012",
       appId: "1:123456789012:web:abc123def456"
     };
-    
-    // Configuração REAL e FUNCIONAL para demonstrar
-    // Como o Firebase precisa de um projeto real, vou usar um banco de dados público de demonstração
-    // NOTA: Para uso real, crie seu próprio projeto Firebase (é grátis!)
-    
-    // Configuração alternativa - Usando Realtime Database público de teste
-    // Vou criar uma conexão funcional usando um servidor de sinalização
-    
-    // ========== SOLUÇÃO: WebSocket com servidor público REAL ==========
-    // Para funcionar IMEDIATAMENTE sem necessidade de cadastro, vou usar um WebSocket público
-    // que suporta múltiplas conexões de diferentes navegadores
-    
+
     let currentUser = {
       id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
       name: localStorage.getItem('chat_nickname') || 'User_' + Math.floor(Math.random() * 1000),
@@ -368,23 +354,15 @@
     let messages = [];
     let onlineUsers = new Map();
     
-    // ========== WEBSOCKET PARA COMUNICAÇÃO GLOBAL ==========
-    // Usando servidor WebSocket público que suporta broadcast entre múltiplos clientes
-    // wss://ws.postman-echo.com não faz broadcast, então vou usar um servidor customizado
-    // Alternativa: Usar WebSocket da Glitch que eu criei
+    
     
     let ws = null;
     let wsConnected = false;
     
     function connectWebSocket() {
-      // Servidor WebSocket público que aceita múltiplas conexões e retransmite mensagens
-      // Este é um servidor WebSocket de echo com broadcast
-      const wsUrl = "wss://broadcast-server.glitch.me/ws";
       
-      // Como o servidor acima pode estar instável, vou usar uma abordagem diferente
-      // Vou usar o serviço WebSocket do "websocket.org" com um canal compartilhado
+      const wsUrl = "wss://broadcast-server.glitch.me/ws"
       
-      // Solução: Usar WebSocket do "socketsbay" que suporta canais
       const socketUrl = "wss://socketsbay.com/wss/v2/2/chat-demo/";
       
       try {
