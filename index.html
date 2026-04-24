@@ -3,330 +3,471 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fórmula APK Chat V3</title>
+  <title>Fórmula APK Chat V4</title>
 
-  <<style>
-  * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-  body {
-    margin: 0;
-    background: #eef0f3;
-  }
+    body {
+      margin: 0;
+      background: #d8dbd5;
+    }
 
-  .login-screen {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
+    body.dark {
+      background: #111;
+    }
 
-  .login-card {
-    background: white;
-    width: 100%;
-    max-width: 380px;
-    padding: 35px 25px;
-    border-radius: 22px;
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-  }
+    button {
+      border: none;
+      cursor: pointer;
+    }
 
-  .login-card h1 {
-    color: #00856f;
-    margin-bottom: 15px;
-  }
+    input {
+      outline: none;
+    }
 
-  .warning {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 22px;
-  }
+    .login-screen {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-  input {
-    width: 100%;
-    padding: 15px;
-    border-radius: 14px;
-    border: 1px solid #ddd;
-    font-size: 15px;
-    outline: none;
-  }
+    .login-card {
+      background: white;
+      width: 100%;
+      max-width: 390px;
+      padding: 35px 25px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+    }
 
-  button {
-    border: none;
-    cursor: pointer;
-  }
+    body.dark .login-card {
+      background: #1f1f1f;
+      color: white;
+    }
 
-  .enter-btn {
-    width: 100%;
-    margin-top: 16px;
-    padding: 15px;
-    background: #00856f;
-    color: white;
-    font-weight: bold;
-    border-radius: 14px;
-    font-size: 15px;
-  }
+    .login-card h1 {
+      color: #00856f;
+      margin-bottom: 12px;
+    }
 
-  .chat-screen {
-    display: none;
-    height: 100vh;
-    flex-direction: column;
-    background: #ebe6dc;
-  }
+    .warning {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 22px;
+      line-height: 1.4;
+    }
 
-  .chat-header {
-    height: 76px;
-    background: white;
-    display: flex;
-    align-items: center;
-    padding: 12px 14px;
-    gap: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-    z-index: 2;
-  }
+    body.dark .warning {
+      color: #ccc;
+    }
 
-  .logo {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
-    background: #009879;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
+    .login-card input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
 
-  .header-info {
-    flex: 1;
-  }
+    .enter-btn {
+      width: 100%;
+      padding: 15px;
+      background: #00856f;
+      color: white;
+      font-weight: bold;
+      border-radius: 16px;
+      font-size: 15px;
+    }
 
-  .header-title {
-    font-weight: bold;
-    color: #222;
-  }
+    .chat-screen {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+      background: #efe7dc;
+    }
 
-  .live {
-    font-size: 12px;
-    color: #18c06e;
-    font-weight: bold;
-    margin-top: 3px;
-  }
+    body.dark .chat-screen {
+      background: #0b141a;
+    }
 
-  .header-actions {
-    display: flex;
-    gap: 6px;
-  }
+    .chat-header {
+      height: 76px;
+      background: #075e54;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      gap: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      z-index: 2;
+    }
 
-  .small-btn {
-    background: #f1f1f1;
-    color: #333;
-    font-size: 12px;
-    padding: 8px 10px;
-    border-radius: 10px;
-    font-weight: bold;
-  }
+    .avatar {
+      width: 46px;
+      height: 46px;
+      min-width: 46px;
+      border-radius: 50%;
+      background: #25d366;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 17px;
+      border: 2px solid rgba(255,255,255,0.35);
+    }
 
-  .admin-btn {
-    background: #111;
-    color: white;
-  }
+    .header-info {
+      flex: 1;
+      overflow: hidden;
+    }
 
-  .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px 8px;
-    padding-bottom: 130px;
-    display: flex;
-    flex-direction: column;
-  }
+    .header-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
 
-  .day-label {
-    width: fit-content;
-    margin: 8px auto 14px;
-    background: rgba(255,255,255,0.85);
-    color: #666;
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  }
+    .live {
+      font-size: 12px;
+      color: #d4ffec;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  .system-message {
-    width: fit-content;
-    max-width: 90%;
-    margin: 8px auto;
-    background: #fff4c2;
-    color: #6b5b00;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    text-align: center;
-  }
+    .header-actions {
+      display: flex;
+      gap: 5px;
+    }
 
-  .message {
-    width: fit-content;
-    max-width: 78%;
-    min-width: 70px;
-    padding: 6px 8px 4px;
-    border-radius: 8px;
-    margin-bottom: 4px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-    word-wrap: break-word;
-    position: relative;
-  }
+    .small-btn {
+      background: rgba(255,255,255,0.16);
+      color: white;
+      font-size: 12px;
+      padding: 8px 9px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
 
-  .my-message {
-    align-self: flex-end;
-    background: #dcf8c6;
-    border-top-right-radius: 2px;
-  }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 8px;
+      padding-bottom: 150px;
+      display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(rgba(0,0,0,0.04) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
 
-  .other-message {
-    align-self: flex-start;
-    background: #ffffff;
-    border-top-left-radius: 2px;
-  }
+    .day-label {
+      width: fit-content;
+      margin: 8px auto 14px;
+      background: rgba(255,255,255,0.9);
+      color: #555;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
 
-  .name {
-    font-size: 12px;
-    color: #c96b00;
-    font-weight: bold;
-    margin-bottom: 3px;
-  }
+    body.dark .day-label {
+      background: #202c33;
+      color: #ccc;
+    }
 
-  .text {
-    font-size: 14px;
-    color: #222;
-    line-height: 1.25;
-    white-space: pre-wrap;
-    margin: 0;
-  }
+    .system-message {
+      width: fit-content;
+      max-width: 90%;
+      margin: 8px auto;
+      background: #fff4c2;
+      color: #6b5b00;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      text-align: center;
+    }
 
-  .time {
-    font-size: 10px;
-    color: #777;
-    margin-top: 2px;
-    text-align: right;
-  }
+    .message-row {
+      display: flex;
+      width: 100%;
+      margin-bottom: 5px;
+    }
 
-  .reply-box {
-    background: rgba(0,0,0,0.06);
-    border-left: 4px solid #009879;
-    padding: 6px 8px;
-    border-radius: 7px;
-    margin-bottom: 5px;
-    font-size: 12px;
-  }
+    .message-row.mine {
+      justify-content: flex-end;
+    }
 
-  .reply-name {
-    font-weight: bold;
-    color: #007765;
-    margin-bottom: 3px;
-  }
+    .message-row.other {
+      justify-content: flex-start;
+    }
 
-  .reply-text {
-    color: #555;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 210px;
-  }
+    .message {
+      width: fit-content;
+      max-width: 78%;
+      min-width: 70px;
+      padding: 6px 8px 4px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+      word-wrap: break-word;
+      position: relative;
+    }
 
-  .message-actions {
-    display: none;
-    gap: 5px;
-    margin-top: 4px;
-    justify-content: flex-end;
-  }
+    .my-message {
+      background: #dcf8c6;
+      border-top-right-radius: 2px;
+    }
 
-  .message:active .message-actions,
-  .message:hover .message-actions {
-    display: flex;
-  }
+    .other-message {
+      background: #ffffff;
+      border-top-left-radius: 2px;
+    }
 
-  .reply-btn {
-    background: rgba(0, 150, 120, 0.12);
-    color: #007765;
-    padding: 4px 7px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: bold;
-  }
+    body.dark .my-message {
+      background: #005c4b;
+      color: white;
+    }
 
-  .delete-btn {
-    background: #ff4d4d;
-    color: white;
-    padding: 4px 7px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: bold;
-  }
+    body.dark .other-message {
+      background: #202c33;
+      color: white;
+    }
 
-  .reply-preview {
-    display: none;
-    position: fixed;
-    bottom: 72px;
-    left: 0;
-    width: 100%;
-    background: #f1f1f1;
-    padding: 8px 12px;
-    border-top: 1px solid #ddd;
-    z-index: 5;
-  }
+    .my-message::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: 0;
+      border-left: 7px solid #dcf8c6;
+      border-bottom: 7px solid transparent;
+    }
 
-  .reply-preview-content {
-    background: white;
-    border-left: 4px solid #009879;
-    padding: 8px;
-    border-radius: 10px;
-    font-size: 13px;
-    position: relative;
-  }
+    .other-message::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 0;
+      border-right: 7px solid #ffffff;
+      border-bottom: 7px solid transparent;
+    }
 
-  .cancel-reply {
-    position: absolute;
-    right: 8px;
-    top: 8px;
-    background: #ddd;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    font-weight: bold;
-  }
+    body.dark .my-message::after {
+      border-left-color: #005c4b;
+    }
 
-  .input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #f7f7f7;
-    padding: 10px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
-    z-index: 4;
-  }
+    body.dark .other-message::before {
+      border-right-color: #202c33;
+    }
 
-  .input-area input {
-    border-radius: 25px;
-    background: white;
-  }
+    .name {
+      font-size: 12px;
+      color: #c96b00;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
 
-  .send-btn {
-    min-width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: #00856f;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-  }
-</style>
+    body.dark .name {
+      color: #7ee787;
+    }
+
+    .reply-box {
+      background: rgba(0,0,0,0.06);
+      border-left: 4px solid #009879;
+      padding: 6px 8px;
+      border-radius: 7px;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+
+    body.dark .reply-box {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .reply-name {
+      font-weight: bold;
+      color: #007765;
+      margin-bottom: 3px;
+    }
+
+    body.dark .reply-name {
+      color: #6ee7b7;
+    }
+
+    .reply-text {
+      color: #555;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 210px;
+    }
+
+    body.dark .reply-text {
+      color: #ccc;
+    }
+
+    .text {
+      font-size: 14px;
+      color: #222;
+      line-height: 1.25;
+      white-space: pre-wrap;
+      margin: 0;
+    }
+
+    body.dark .text {
+      color: #f1f1f1;
+    }
+
+    .time {
+      font-size: 10px;
+      color: #777;
+      margin-top: 2px;
+      text-align: right;
+    }
+
+    body.dark .time {
+      color: #bbb;
+    }
+
+    .message-actions {
+      display: none;
+      gap: 5px;
+      margin-top: 5px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .message:active .message-actions,
+    .message:hover .message-actions {
+      display: flex;
+    }
+
+    .action-btn {
+      background: rgba(0, 150, 120, 0.12);
+      color: #007765;
+      padding: 4px 7px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .delete-btn {
+      background: #ff4d4d;
+      color: white;
+    }
+
+    .typing {
+      display: none;
+      position: fixed;
+      bottom: 118px;
+      left: 12px;
+      background: rgba(255,255,255,0.95);
+      color: #555;
+      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 15px;
+      z-index: 6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    body.dark .typing {
+      background: #202c33;
+      color: #ddd;
+    }
+
+    .reply-preview {
+      display: none;
+      position: fixed;
+      bottom: 72px;
+      left: 0;
+      width: 100%;
+      background: #f1f1f1;
+      padding: 8px 12px;
+      border-top: 1px solid #ddd;
+      z-index: 5;
+    }
+
+    body.dark .reply-preview {
+      background: #111b21;
+      border-top-color: #333;
+      color: white;
+    }
+
+    .reply-preview-content {
+      background: white;
+      border-left: 4px solid #009879;
+      padding: 8px;
+      border-radius: 10px;
+      font-size: 13px;
+      position: relative;
+    }
+
+    body.dark .reply-preview-content {
+      background: #202c33;
+    }
+
+    .cancel-reply {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      background: #ddd;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-weight: bold;
+    }
+
+    .input-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #f0f2f5;
+      padding: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.08);
+      z-index: 4;
+    }
+
+    body.dark .input-area {
+      background: #202c33;
+    }
+
+    .input-area input {
+      width: 100%;
+      border-radius: 25px;
+      background: white;
+      border: none;
+      padding: 15px;
+      font-size: 15px;
+    }
+
+    body.dark .input-area input {
+      background: #2a3942;
+      color: white;
+    }
+
+    .send-btn {
+      min-width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #00856f;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
@@ -344,7 +485,7 @@
 
   <div class="chat-screen" id="chatScreen">
     <div class="chat-header">
-      <div class="logo">APK</div>
+      <div class="avatar" id="userAvatar">APK</div>
 
       <div class="header-info">
         <div class="header-title">Chat Global Premium</div>
@@ -352,12 +493,15 @@
       </div>
 
       <div class="header-actions">
-        <button class="small-btn admin-btn" onclick="adminPanel()">ADM</button>
+        <button class="small-btn" onclick="toggleTheme()">🌙</button>
+        <button class="small-btn" onclick="adminPanel()">ADM</button>
         <button class="small-btn" onclick="logout()">Sair</button>
       </div>
     </div>
 
     <div class="messages" id="messages"></div>
+
+    <div class="typing" id="typingBox">alguém está digitando...</div>
 
     <div class="reply-preview" id="replyPreview">
       <div class="reply-preview-content">
@@ -387,7 +531,9 @@
       limit,
       deleteDoc,
       doc,
-      getDocs
+      getDocs,
+      updateDoc,
+      setDoc
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -404,51 +550,119 @@
     const db = getFirestore(app);
 
     const ADMIN_PASSWORD = "123456";
-    let isAdmin = localStorage.getItem("isAdmin") === "true";
 
+    let isAdmin = localStorage.getItem("isAdmin") === "true";
     let userName = localStorage.getItem("chatName") || "";
+    let userId = localStorage.getItem("chatUserId") || crypto.randomUUID();
     let lastMessageTime = 0;
     let lastSnapshotSize = 0;
-
     let replyingTo = null;
+    let typingTimer = null;
+
+    localStorage.setItem("chatUserId", userId);
 
     const loginScreen = document.getElementById("loginScreen");
     const chatScreen = document.getElementById("chatScreen");
     const messagesBox = document.getElementById("messages");
     const messageInput = document.getElementById("messageInput");
     const onlineStatus = document.getElementById("onlineStatus");
+    const userAvatar = document.getElementById("userAvatar");
+    const typingBox = document.getElementById("typingBox");
 
     const replyPreview = document.getElementById("replyPreview");
     const replyPreviewName = document.getElementById("replyPreviewName");
     const replyPreviewText = document.getElementById("replyPreviewText");
 
-    const forbiddenWords = [
-      "palavrão1",
-      "palavrão2",
-      "spam"
-    ];
+    const forbiddenWords = ["palavrão1", "palavrão2", "spam"];
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+    }
 
     if (userName) {
       loginScreen.style.display = "none";
       chatScreen.style.display = "flex";
-      loadMessages();
       setOnlineStatus();
+      setAvatar();
+      setUserOnline();
+      listenTyping();
+      loadMessages();
     }
 
     function cleanText(text) {
       let newText = text;
-
       forbiddenWords.forEach(word => {
         const regex = new RegExp(word, "gi");
         newText = newText.replace(regex, "***");
       });
-
       return newText;
     }
 
-    function setOnlineStatus() {
-      onlineStatus.textContent = "● LIVE — conectado como " + userName;
+    function setAvatar() {
+      const letters = userName
+        .split(" ")
+        .map(p => p[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase();
+
+      userAvatar.textContent = letters || "APK";
     }
+
+    function setOnlineStatus() {
+      onlineStatus.textContent = "● online — " + userName;
+    }
+
+    async function setUserOnline() {
+      await setDoc(doc(db, "onlineUsers", userId), {
+        name: userName,
+        online: true,
+        lastSeen: serverTimestamp()
+      });
+    }
+
+    async function setTyping(isTyping) {
+      if (!userName) return;
+
+      await setDoc(doc(db, "typingUsers", userId), {
+        name: userName,
+        typing: isTyping,
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    function listenTyping() {
+      const q = query(collection(db, "typingUsers"));
+
+      onSnapshot(q, (snapshot) => {
+        let typingNames = [];
+
+        snapshot.forEach((item) => {
+          const data = item.data();
+
+          if (item.id !== userId && data.typing) {
+            typingNames.push(data.name);
+          }
+        });
+
+        if (typingNames.length > 0) {
+          typingBox.style.display = "block";
+          typingBox.textContent = typingNames[0] + " está digitando...";
+        } else {
+          typingBox.style.display = "none";
+        }
+      });
+    }
+
+    window.toggleTheme = function() {
+      document.body.classList.toggle("dark");
+
+      if (document.body.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+      } else {
+        localStorage.setItem("theme", "light");
+      }
+    };
 
     window.enterChat = async function() {
       const name = document.getElementById("nameInput").value.trim();
@@ -475,6 +689,9 @@
       chatScreen.style.display = "flex";
 
       setOnlineStatus();
+      setAvatar();
+      setUserOnline();
+      listenTyping();
 
       await addDoc(collection(db, "messages"), {
         name: "Sistema",
@@ -486,7 +703,15 @@
       loadMessages();
     };
 
-    window.logout = function() {
+    window.logout = async function() {
+      await setDoc(doc(db, "onlineUsers", userId), {
+        name: userName,
+        online: false,
+        lastSeen: serverTimestamp()
+      });
+
+      await setTyping(false);
+
       localStorage.removeItem("chatName");
       localStorage.removeItem("isAdmin");
       location.reload();
@@ -500,7 +725,7 @@
         localStorage.setItem("isAdmin", "true");
         alert("Modo ADM ativado.");
 
-        const action = prompt("Digite: limpar  |  sair");
+        const action = prompt("Digite: limpar | sair");
 
         if (action === "limpar") {
           clearChat();
@@ -532,23 +757,30 @@
     };
 
     window.deleteMessage = async function(id) {
-      if (!isAdmin) {
-        alert("Apenas ADM pode apagar mensagens.");
-        return;
-      }
-
       const confirmDelete = confirm("Apagar esta mensagem?");
       if (!confirmDelete) return;
 
       await deleteDoc(doc(db, "messages", id));
     };
 
+    window.editMessage = async function(id, oldText, ownerName) {
+      if (ownerName !== userName && !isAdmin) {
+        alert("Você só pode editar suas mensagens.");
+        return;
+      }
+
+      const newText = prompt("Editar mensagem:", oldText);
+
+      if (!newText || !newText.trim()) return;
+
+      await updateDoc(doc(db, "messages", id), {
+        text: cleanText(newText.trim()),
+        edited: true
+      });
+    };
+
     window.startReply = function(id, name, text) {
-      replyingTo = {
-        id: id,
-        name: name,
-        text: text
-      };
+      replyingTo = { id, name, text };
 
       replyPreview.style.display = "block";
       replyPreviewName.textContent = "Respondendo " + name;
@@ -581,14 +813,16 @@
       }
 
       text = cleanText(text);
-
       lastMessageTime = now;
 
       try {
         const messageData = {
           name: userName,
+          userId: userId,
           text: text,
           type: "normal",
+          edited: false,
+          status: "✓✓",
           createdAt: serverTimestamp()
         };
 
@@ -604,6 +838,7 @@
 
         messageInput.value = "";
         cancelReply();
+        setTyping(false);
       } catch (error) {
         alert("Erro ao enviar mensagem.");
         console.error(error);
@@ -614,7 +849,7 @@
       const q = query(
         collection(db, "messages"),
         orderBy("createdAt", "asc"),
-        limit(80)
+        limit(100)
       );
 
       onSnapshot(q, (snapshot) => {
@@ -644,15 +879,17 @@
             return;
           }
 
-          const messageClass = msg.name === userName ? "my-message" : "other-message";
+          const isMine = msg.name === userName || msg.userId === userId;
+
+          const row = document.createElement("div");
+          row.className = isMine ? "message-row mine" : "message-row other";
 
           const div = document.createElement("div");
-          div.className = `message ${messageClass}`;
+          div.className = isMine ? "message my-message" : "message other-message";
 
           const nameDiv = document.createElement("div");
           nameDiv.className = "name";
           nameDiv.textContent = msg.name || "Usuário";
-
           div.appendChild(nameDiv);
 
           if (msg.replyTo) {
@@ -678,13 +915,13 @@
 
           const timeDiv = document.createElement("div");
           timeDiv.className = "time";
-          timeDiv.textContent = time;
+          timeDiv.textContent = time + (msg.edited ? " · editada" : "") + (isMine ? " ✓✓" : "");
 
           const actionsDiv = document.createElement("div");
           actionsDiv.className = "message-actions";
 
           const replyButton = document.createElement("button");
-          replyButton.className = "reply-btn";
+          replyButton.className = "action-btn";
           replyButton.textContent = "Responder";
           replyButton.onclick = function() {
             startReply(id, msg.name || "Usuário", msg.text || "");
@@ -692,14 +929,22 @@
 
           actionsDiv.appendChild(replyButton);
 
-          if (isAdmin) {
+          if (isMine || isAdmin) {
+            const editButton = document.createElement("button");
+            editButton.className = "action-btn";
+            editButton.textContent = "Editar";
+            editButton.onclick = function() {
+              editMessage(id, msg.text || "", msg.name || "");
+            };
+
             const deleteButton = document.createElement("button");
-            deleteButton.className = "delete-btn";
+            deleteButton.className = "action-btn delete-btn";
             deleteButton.textContent = "Apagar";
             deleteButton.onclick = function() {
               deleteMessage(id);
             };
 
+            actionsDiv.appendChild(editButton);
             actionsDiv.appendChild(deleteButton);
           }
 
@@ -707,7 +952,8 @@
           div.appendChild(timeDiv);
           div.appendChild(actionsDiv);
 
-          messagesBox.appendChild(div);
+          row.appendChild(div);
+          messagesBox.appendChild(row);
         });
 
         if (snapshot.size > lastSnapshotSize && lastSnapshotSize !== 0) {
@@ -722,15 +968,29 @@
     function playNotification() {
       try {
         const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
-        audio.volume = 0.25;
+        audio.volume = 0.18;
         audio.play();
       } catch (e) {}
     }
+
+    messageInput.addEventListener("input", function() {
+      setTyping(true);
+
+      clearTimeout(typingTimer);
+
+      typingTimer = setTimeout(() => {
+        setTyping(false);
+      }, 1200);
+    });
 
     messageInput.addEventListener("keydown", function(e) {
       if (e.key === "Enter") {
         sendMessage();
       }
+    });
+
+    window.addEventListener("beforeunload", function() {
+      setTyping(false);
     });
   </script>
 
