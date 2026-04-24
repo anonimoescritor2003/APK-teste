@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fórmula APK Chat</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Global Premium</title>
+
   <style>
     * {
       box-sizing: border-box;
@@ -26,7 +27,7 @@
     .login-card {
       background: white;
       width: 100%;
-      max-width: 380px;
+      max-width: 390px;
       padding: 35px 25px;
       border-radius: 22px;
       text-align: center;
@@ -138,6 +139,7 @@
       font-size: 15px;
       color: #333;
       line-height: 1.4;
+      word-wrap: break-word;
     }
 
     .time {
@@ -175,13 +177,16 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
       <h1>Fórmula APK</h1>
-      <p class="warning">⚠️ Seja respeitoso. O uso de linguagem ofensiva ou spam resultará em banimento imediato do chat.</p>
-      <input type="text" id="nameInput" placeholder="Seu apelido..." />
+      <p class="warning">
+        ⚠️ Seja respeitoso. O uso de linguagem ofensiva ou spam resultará em banimento imediato do chat.
+      </p>
+      <input type="text" id="nameInput" placeholder="Seu apelido...">
       <button class="enter-btn" onclick="enterChat()">ENTRAR NO CHAT</button>
     </div>
   </div>
@@ -198,26 +203,36 @@
     <div class="messages" id="messages"></div>
 
     <div class="input-area">
-      <input type="text" id="messageInput" placeholder="Mensagem..." />
+      <input type="text" id="messageInput" placeholder="Mensagem...">
       <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp,
+      query,
+      orderBy,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyCyOdEV7GfcOqVCYLlp8LMD_0Y8Y6HTTJg",
-  authDomain: "chat-global-665c0.firebaseapp.com",
-  projectId: "chat-global-665c0",
-  storageBucket: "chat-global-665c0.firebasestorage.app",
-  messagingSenderId: "484426308227",
-  appId: "1:484426308227:web:6a8f95b90eb61a97d3d9b6",
-  measurementId: "G-LCJNC6B8MW"
-};
+      apiKey: "AIzaSyCyOdEV7GfcOqVCYLlp8LMD_0Y8Y6HTTJg",
+      authDomain: "chat-global-665c0.firebaseapp.com",
+      projectId: "chat-global-665c0",
+      storageBucket: "chat-global-665c0.firebasestorage.app",
+      messagingSenderId: "484426308227",
+      appId: "1:484426308227:web:6a8f95b90eb61a97d3d9b6",
+      measurementId: "G-LCJNC6B8MW"
+    };
 
     const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
     let userName = localStorage.getItem("chatName") || "";
@@ -232,7 +247,7 @@
       loadMessages();
     }
 
-    window.enterChat = function() {
+    window.enterChat = function () {
       const name = document.getElementById("nameInput").value.trim();
 
       if (!name) {
@@ -247,9 +262,9 @@
       chatScreen.style.display = "flex";
 
       loadMessages();
-    }
+    };
 
-    window.sendMessage = async function() {
+    window.sendMessage = async function () {
       const input = document.getElementById("messageInput");
       const text = input.value.trim();
 
@@ -262,7 +277,7 @@
       });
 
       input.value = "";
-    }
+    };
 
     function loadMessages() {
       const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
@@ -292,6 +307,12 @@
         messagesBox.scrollTop = messagesBox.scrollHeight;
       });
     }
+
+    document.getElementById("messageInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
   </script>
 
 </body>
