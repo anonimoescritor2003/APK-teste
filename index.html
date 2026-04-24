@@ -852,4 +852,415 @@ function listenTyping() {
   onSnapshot(collection(db, "typingUsers"), snapshot => {
     let typingNames = [];
     snapshot.forEach(item => {
-      const data
+      const data = item.data();
+      if (item.id !== userId && data.typing) typingNames.push(data.name);
+    });
+
+    if (typingNames.length > 0) {
+      typingBox.style.display = "block";
+      typingBox.textContent = typingNames[0] + " está digitando...";
+    } else {
+      typingBox.style.display = "none";
+    }
+  });
+}
+
+window.toggleTheme = function() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+};
+
+window.enterChat = async function() {
+  const name = document.getElementById("nameInput").value.trim();
+  const avatar = document.getElementById("avatarInput").value.trim();
+
+  if (!name) {
+    document.getElementById("loginError").textContent = "Digite seu apelido!";
+    document.getElementById("loginError").style.display = "block";
+    return;
+  }
+  if (name.length < 3) {
+    document.getElementById("loginError").textContent = "Mínimo 3 letras!";
+    document.getElementById("loginError").style.display = "block";
+    return;
+  }
+  if (name.length > 20) {
+    document.getElementById("loginError").textContent = "Máximo 20 caracteres!";
+    document.getElementById("loginError").style.display = "block";
+    return;
+  }
+
+  if (!firebaseConnected) {
+    document.getElementById("loginError").textContent = "⚠️ Sem conexão com o servidor. Recarregue a página.";
+    document.getElementById("loginError").style.display = "block";
+    return;
+  }
+
+  userName = name;
+  userAvatarUrl = avatar;
+
+  localStorage.setItem("chatName", userName);
+  localStorage.setItem("chatAvatar", userAvatarUrl);
+
+  const banned = await checkBan();
+  if (banned) {
+    alert("Você está banido deste chat.");
+    localStorage.removeItem("chatName");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "messages"), {
+      name: "📢 Sistema",
+      text: userName + " entrou no chat.",
+      type: "system",
+      createdAt: serverTimestamp()
+    });
+    startApp();
+  } catch (error) {
+    console.error("Erro ao entrar:", error);
+    document.getElementById("loginError").textContent = "⚠️ Erro ao conectar. Tente novamente.";
+    document.getElementById("loginError").style.display = "block";
+  }
+};
+
+window.logout = async function() {
+  await setUserOnline(false);
+  await setTyping(false);
+  localStorage.removeItem("chatName");
+  location.reload();
+};
+
+window.openAdmin = function() {
+  document.getElementById("adminModal").style.display = "flex";
+  adminTools.style.display = "none";
+  adminStatus.innerHTML = "";
+  document.getElementById("adminPass").value = "";
+};
+
+window.closeAdmin = function() {
+  document.getElementById("adminModal").style.display = "none";
+};
+
+window.loginAdmin = function() {
+  const pass = document.getElementById("adminPass").value;
+  
+  if (pass === ADMIN_PASSWORD) {
+    isAdmin = true;
+    adminTools.style.display = "block";
+    adminStatus.innerHTML = "✅ Admin logado!";
+    adminStatus.style.color = "#4caf50";
+    alert("✅ Modo Admin ativado!");
+    loadMessages();
+  } else {
+    isAdmin = false;
+    adminTools.style.display = "none";
+    adminStatus.innerHTML = "❌ Senha incorreta!";
+    adminStatus.style.color = "#ff4d4d";
+    alert("❌ Senha incorreta!");
+  }
+};
+
+function verificarAdmin() {
+  if (!isAdmin) {
+    alert("❌ Faça login como admin primeiro!");
+    return false;
+  }
+  return true;
+}
+
+window.banByName = async function() {
+  if (!verificarAdmin()) return;
+  
+  const name = document.getElementById("banNameInput").value.trim();
+  if (!name) return alert("Digite um apelido.");
+
+  await setDoc(doc(db, "bans", "name_" + normalizeName(name)), {
+    type: "name",
+    name: name,
+    createdAt: serverTimestamp()
+  });
+
+  alert("✅ Apelido banido!");
+  document.getElementById("banNameInput").value = "";
+};
+
+window.banUser = async function(targetName, targetId) {
+  if (!verificarAdmin()) return;
+  if (!confirm("Banir " + targetName + "?")) return;
+
+  await setDoc(doc(db, "bans", "name_" + normalizeName(targetName)), {
+    type: "name",
+    name: targetName,
+    createdAt: serverTimestamp()
+  });
+
+  if (targetId) {
+    await setDoc(doc(db, "bans", "device_" + targetId), {
+      type: "device",
+      userId: targetId,
+      name: targetName,
+      createdAt: serverTimestamp()
+    });
+  }
+  alert("✅ Usuário banido!");
+};
+
+window.clearChat = async function() {
+  if (!verificarAdmin()) return;
+  if (!confirm("⚠️ Apagar TODAS as mensagens?")) return;
+
+  const q = query(collection(db, "messages"), limit(300));
+  const snapshot = await getDocs(q);
+  const deletes = [];
+  snapshot.forEach(item => deletes.push(deleteDoc(doc(db, "messages", item.id))));
+  await Promise.all(deletes);
+  alert("✅ Chat limpo!");
+};
+
+window.deleteMessage = async function(id) {
+  if (!verificarAdmin()) return;
+  if (!confirm("Apagar mensagem?")) return;
+  await deleteDoc(doc(db, "messages", id));
+};
+
+window.editMessage = async function(id, oldText, ownerId) {
+  if (ownerId !== userId && !isAdmin) {
+    return alert("❌ Só é possível editar suas próprias mensagens!");
+  }
+
+  const newText = prompt("Editar mensagem:", oldText);
+  if (!newText || !newText.trim()) return;
+
+  await updateDoc(doc(db, "messages", id), {
+    text: cleanText(newText.trim()),
+    edited: true
+  });
+};
+
+window.startReply = function(id, name, text) {
+  replyingTo = { id, name, text };
+  replyPreview.style.display = "block";
+  replyPreviewName.textContent = "Respondendo " + name;
+  replyPreviewText.textContent = text;
+  messageInput.focus();
+};
+
+window.cancelReply = function() {
+  replyingTo = null;
+  replyPreview.style.display = "none";
+};
+
+window.sendMessage = async function() {
+  const now = Date.now();
+
+  if (now - lastMessageTime < 1500) return alert("Aguarde um pouco.");
+
+  let text = messageInput.value.trim();
+  if (!text) return;
+  if (text.length > 300) return alert("Mensagem muito grande.");
+
+  const banned = await checkBan();
+  if (banned) return alert("Você está banido.");
+
+  text = cleanText(text);
+  lastMessageTime = now;
+
+  const messageData = {
+    name: userName,
+    userId: userId,
+    avatar: userAvatarUrl,
+    text: text,
+    type: "normal",
+    edited: false,
+    seenBy: [userId],
+    createdAt: serverTimestamp()
+  };
+
+  if (replyingTo) messageData.replyTo = replyingTo;
+
+  try {
+    await addDoc(collection(db, "messages"), messageData);
+    messageInput.value = "";
+    cancelReply();
+    setTyping(false);
+  } catch (error) {
+    console.error("Erro ao enviar:", error);
+    alert("Erro ao enviar mensagem!");
+  }
+};
+
+async function markSeen(id, msg) {
+  if (msg.userId !== userId && (!msg.seenBy || !msg.seenBy.includes(userId))) {
+    try {
+      await updateDoc(doc(db, "messages", id), {
+        seenBy: arrayUnion(userId)
+      });
+    } catch (error) {
+      console.error("Erro ao marcar visto:", error);
+    }
+  }
+}
+
+function playNotification() {
+  try {
+    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+    audio.volume = 0.18;
+    audio.play();
+  } catch(e) {}
+}
+
+function loadMessages() {
+  if (!firebaseConnected) return;
+  
+  const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(120));
+
+  onSnapshot(q, snapshot => {
+    messagesBox.innerHTML = "";
+
+    const day = document.createElement("div");
+    day.className = "day-label";
+    day.textContent = "Hoje";
+    messagesBox.appendChild(day);
+
+    snapshot.forEach(documentItem => {
+      const msg = documentItem.data();
+      const id = documentItem.id;
+
+      if (msg.type === "normal") markSeen(id, msg);
+
+      const time = msg.createdAt?.toDate
+        ? msg.createdAt.toDate().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})
+        : "";
+
+      if (msg.type === "system") {
+        const sys = document.createElement("div");
+        sys.className = "system-message";
+        sys.textContent = msg.text || "";
+        messagesBox.appendChild(sys);
+        return;
+      }
+
+      const isMine = msg.userId === userId || msg.name === userName;
+
+      const row = document.createElement("div");
+      row.className = isMine ? "message-row mine" : "message-row other";
+
+      if (!isMine) row.appendChild(makeAvatar(msg.name, msg.avatar));
+
+      const div = document.createElement("div");
+      div.className = isMine ? "message my-message" : "message other-message";
+
+      const nameDiv = document.createElement("div");
+      nameDiv.className = "message-name";
+      nameDiv.textContent = msg.name || "Usuário";
+      div.appendChild(nameDiv);
+
+      if (msg.replyTo) {
+        const replyBox = document.createElement("div");
+        replyBox.className = "reply-box";
+        const replyName = document.createElement("div");
+        replyName.className = "reply-name";
+        replyName.textContent = msg.replyTo.name || "Usuário";
+        const replyText = document.createElement("div");
+        replyText.className = "reply-text";
+        replyText.textContent = msg.replyTo.text || "";
+        replyBox.appendChild(replyName);
+        replyBox.appendChild(replyText);
+        div.appendChild(replyBox);
+      }
+
+      const textDiv = document.createElement("div");
+      textDiv.className = "message-text";
+      textDiv.textContent = msg.text || "";
+
+      const seenCount = msg.seenBy ? msg.seenBy.length : 1;
+      const status = isMine ? (seenCount > 1 ? "✓✓" : "✓") : "";
+
+      const timeDiv = document.createElement("div");
+      timeDiv.className = "message-time";
+      timeDiv.innerHTML = time + (msg.edited ? " ✏️" : "") + (status ? " " + status : "");
+
+      const actionsDiv = document.createElement("div");
+      actionsDiv.className = "message-actions";
+
+      const replyButton = document.createElement("button");
+      replyButton.className = "action-btn";
+      replyButton.textContent = "↩ Responder";
+      replyButton.onclick = () => startReply(id, msg.name || "Usuário", msg.text || "");
+      actionsDiv.appendChild(replyButton);
+
+      if (isAdmin) {
+        const editButton = document.createElement("button");
+        editButton.className = "action-btn";
+        editButton.textContent = "✎ Editar";
+        editButton.onclick = () => editMessage(id, msg.text || "", msg.userId);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "action-btn delete-btn";
+        deleteButton.textContent = "🗑 Apagar";
+        deleteButton.onclick = () => deleteMessage(id);
+
+        actionsDiv.appendChild(editButton);
+        actionsDiv.appendChild(deleteButton);
+
+        const banButton = document.createElement("button");
+        banButton.className = "action-btn ban-btn";
+        banButton.textContent = "🚫 Banir";
+        banButton.onclick = () => banUser(msg.name || "Usuário", msg.userId);
+
+        actionsDiv.appendChild(banButton);
+      } else if (isMine) {
+        const editButton = document.createElement("button");
+        editButton.className = "action-btn";
+        editButton.textContent = "✎ Editar";
+        editButton.onclick = () => editMessage(id, msg.text || "", msg.userId);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "action-btn delete-btn";
+        deleteButton.textContent = "🗑 Apagar";
+        deleteButton.onclick = () => deleteMessage(id);
+
+        actionsDiv.appendChild(editButton);
+        actionsDiv.appendChild(deleteButton);
+      }
+
+      div.appendChild(textDiv);
+      div.appendChild(timeDiv);
+      div.appendChild(actionsDiv);
+
+      row.appendChild(div);
+      messagesBox.appendChild(row);
+    });
+
+    if (snapshot.size > lastSnapshotSize && lastSnapshotSize !== 0) {
+      playNotification();
+    }
+
+    lastSnapshotSize = snapshot.size;
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }, (error) => {
+    console.error("Erro ao carregar mensagens:", error);
+    connectionStatusDiv.style.display = "block";
+    setTimeout(() => { connectionStatusDiv.style.display = "none"; }, 3000);
+  });
+}
+
+messageInput.addEventListener("input", () => {
+  setTyping(true);
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => setTyping(false), 1200);
+});
+
+messageInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
+});
+
+window.addEventListener("beforeunload", () => {
+  setTyping(false);
+  setUserOnline(false);
+});
+</script>
+
+</body>
+</html>
