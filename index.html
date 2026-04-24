@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-<title>Fórmula APK Chat V5 - Moderno</title>
+<title>CHAT BRASIL - Moderno</title>
 
 <style>
   * {
@@ -669,7 +669,7 @@ import {
   limit, deleteDoc, doc, getDocs, updateDoc, setDoc, getDoc, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ============ NOVAS CONFIGURAÇÕES DO FIREBASE ============
+// Configurações do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCAEcf-BcAtcGMqdGIUrC-vbqnrQLeBEgw",
   authDomain: "chat-apk-9f174.firebaseapp.com",
@@ -689,7 +689,6 @@ try {
   db = getFirestore(app);
   firebaseConnected = true;
   console.log("✅ Firebase conectado com sucesso!");
-  document.getElementById("loginError").style.display = "none";
 } catch (error) {
   console.error("❌ Erro ao conectar Firebase:", error);
   firebaseConnected = false;
@@ -731,9 +730,6 @@ if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark"
 // Verificar se já está logado
 if (userName && firebaseConnected) {
   startApp();
-} else if (userName && !firebaseConnected) {
-  document.getElementById("loginError").textContent = "⚠️ Aguardando conexão... Tente novamente em alguns segundos.";
-  document.getElementById("loginError").style.display = "block";
 }
 
 async function startApp() {
@@ -1111,12 +1107,30 @@ async function markSeen(id, msg) {
   }
 }
 
-function playNotification() {
-  try {
-    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
-    audio.volume = 0.18;
-    audio.play();
-  } catch(e) {}
+// Função de notificação corrigida - sem som automático
+let notificationEnabled = false;
+
+// Ativar notificações com permissão do usuário
+window.ativarNotificacoes = async function() {
+  if ("Notification" in window) {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      notificationEnabled = true;
+      alert("✅ Notificações ativadas!");
+    } else {
+      alert("❌ Você precisa permitir as notificações nas configurações do navegador.");
+    }
+  } else {
+    alert("❌ Seu navegador não suporta notificações.");
+  }
+};
+
+function showNotification(title, body) {
+  if (notificationEnabled && document.hidden) {
+    try {
+      new Notification(title, { body: body });
+    } catch(e) {}
+  }
 }
 
 function loadMessages() {
@@ -1125,11 +1139,20 @@ function loadMessages() {
   const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(200));
 
   onSnapshot(q, snapshot => {
+    const oldHeight = messagesBox.scrollHeight;
+    const wasAtBottom = messagesBox.scrollHeight - messagesBox.scrollTop <= messagesBox.clientHeight + 100;
+    
     messagesBox.innerHTML = "";
 
-    // Verificar novas mensagens
+    // Verificar novas mensagens para notificação
     if (snapshot.size > lastSnapshotSize && lastSnapshotSize !== 0) {
-      playNotification();
+      const novasMensagens = snapshot.docs.slice(lastSnapshotSize);
+      novasMensagens.forEach(doc => {
+        const msg = doc.data();
+        if (msg.name !== userName && msg.type === "normal") {
+          showNotification(`💬 ${msg.name}`, msg.text);
+        }
+      });
     }
     lastSnapshotSize = snapshot.size;
 
@@ -1138,7 +1161,6 @@ function loadMessages() {
       empty.className = "system-message";
       empty.textContent = "✨ Nenhuma mensagem ainda. Seja o primeiro!";
       messagesBox.appendChild(empty);
-      messagesBox.scrollTop = messagesBox.scrollHeight;
       return;
     }
     
@@ -1257,13 +1279,43 @@ function loadMessages() {
       messagesBox.appendChild(row);
     });
 
-    messagesBox.scrollTop = messagesBox.scrollHeight;
+    // Rolar para o final se estava no final
+    if (wasAtBottom) {
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    }
   }, (error) => {
     console.error("Erro ao carregar mensagens:", error);
     connectionStatusDiv.style.display = "block";
     setTimeout(() => { connectionStatusDiv.style.display = "none"; }, 3000);
   });
 }
+
+// Botão para ativar notificações (aparece após login)
+function adicionarBotaoNotificacao() {
+  const btnNotif = document.createElement("button");
+  btnNotif.className = "icon-btn";
+  btnNotif.innerHTML = "🔔";
+  btnNotif.title = "Ativar notificações";
+  btnNotif.onclick = () => ativarNotificacoes();
+  btnNotif.style.position = "fixed";
+  btnNotif.style.bottom = "90px";
+  btnNotif.style.right = "16px";
+  btnNotif.style.background = "var(--primary)";
+  btnNotif.style.color = "white";
+  btnNotif.style.width = "48px";
+  btnNotif.style.height = "48px";
+  btnNotif.style.borderRadius = "50%";
+  btnNotif.style.zIndex = "15";
+  btnNotif.style.cursor = "pointer";
+  document.body.appendChild(btnNotif);
+}
+
+// Adicionar botão de notificação após login
+setTimeout(() => {
+  if (document.getElementById("chatScreen").style.display === "flex") {
+    adicionarBotaoNotificacao();
+  }
+}, 3000);
 
 messageInput.addEventListener("input", () => {
   setTyping(true);
