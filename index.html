@@ -174,7 +174,11 @@ const ADMIN_PASSWORD = "123456";
 let isAdmin = localStorage.getItem("isAdmin") === "true";
 let userName = localStorage.getItem("chatName") || "";
 let userAvatarUrl = localStorage.getItem("chatAvatar") || "";
-let userId = localStorage.getItem("chatUserId") || crypto.randomUUID();
+let userId = localStorage.getItem("chatUserId") || generateUserId();
+
+function generateUserId() {
+  return "user_" + Date.now() + "_" + Math.random().toString(36).substring(2, 12);
+}
 let lastMessageTime = 0;
 let lastSnapshotSize = 0;
 let replyingTo = null;
@@ -550,10 +554,129 @@ function loadMessages() {
 
       let pressData = { id, name: msg.name || "Usuário", text: msg.text || "" };
 
-      div.addEventListener("touchstart", () => {
+      div.addEventListener("mousedown", () => {
         longPressTimer = setTimeout(() => startReply(pressData.id, pressData.name, pressData.text), 600);
       });
 
-      div.addEventListener("touchend", () => clearTimeout(longPressTimer));
+      div.addEventListener("mouseup", () => clearTimeout(longPressTimer));
+      div.addEventListener("mouseleave", () => clearTimeout(longPressTimer));
 
-      div.addEventListene
+      const nameDiv = document.createElement("div");
+      nameDiv.className = "name";
+      nameDiv.textContent = msg.name || "Usuário";
+      div.appendChild(nameDiv);
+
+      if (msg.replyTo) {
+        const replyBox = document.createElement("div");
+        replyBox.className = "reply-box";
+
+        const replyName = document.createElement("div");
+        replyName.className = "reply-name";
+        replyName.textContent = msg.replyTo.name || "Usuário";
+
+        const replyText = document.createElement("div");
+        replyText.className = "reply-text";
+        replyText.textContent = msg.replyTo.text || "";
+
+        replyBox.appendChild(replyName);
+        replyBox.appendChild(replyText);
+        div.appendChild(replyBox);
+      }
+
+      const textDiv = document.createElement("div");
+      textDiv.className = "text";
+      textDiv.textContent = msg.text || "";
+
+      const seenCount = msg.seenBy ? msg.seenBy.length : 1;
+      const status = isMine ? (seenCount > 1 ? "✓✓ visto" : "✓ enviado") : "";
+
+      const timeDiv = document.createElement("div");
+      timeDiv.className = "time";
+      timeDiv.textContent =
+        time +
+        (msg.edited ? " · editada" : "") +
+        (status ? " · " + status : "");
+
+      const actionsDiv = document.createElement("div");
+      actionsDiv.className = "message-actions";
+
+      const replyButton = document.createElement("button");
+      replyButton.className = "action-btn";
+      replyButton.textContent = "Responder";
+      replyButton.onclick = () => startReply(id, msg.name || "Usuário", msg.text || "");
+
+      actionsDiv.appendChild(replyButton);
+
+      if (isMine || isAdmin) {
+        const editButton = document.createElement("button");
+        editButton.className = "action-btn";
+        editButton.textContent = "Editar";
+        editButton.onclick = () => editMessage(id, msg.text || "", msg.userId);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "action-btn delete-btn";
+        deleteButton.textContent = "Apagar todos";
+        deleteButton.onclick = () => deleteMessage(id);
+
+        actionsDiv.appendChild(editButton);
+        actionsDiv.appendChild(deleteButton);
+      }
+
+      if (isAdmin && !isMine) {
+        const banButton = document.createElement("button");
+        banButton.className = "action-btn ban-btn";
+        banButton.textContent = "Banir";
+        banButton.onclick = () => banUser(msg.name || "Usuário", msg.userId);
+
+        actionsDiv.appendChild(banButton);
+      }
+
+      div.appendChild(textDiv);
+      div.appendChild(timeDiv);
+      div.appendChild(actionsDiv);
+
+      row.appendChild(div);
+      messagesBox.appendChild(row);
+    });
+
+    if (snapshot.size > lastSnapshotSize && lastSnapshotSize !== 0) {
+      playNotification();
+    }
+
+    lastSnapshotSize = snapshot.size;
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  });
+}
+
+function playNotification() {
+  try {
+    const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+    audio.volume = 0.18;
+    audio.play();
+  } catch(e) {}
+}
+
+messageInput.addEventListener("input", () => {
+  setTyping(true);
+
+  clearTimeout(typingTimer);
+
+  typingTimer = setTimeout(() => {
+    setTyping(false);
+  }, 1200);
+});
+
+messageInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
+});
+
+window.addEventListener("beforeunload", () => {
+  setTyping(false);
+  setUserOnline(false);
+});
+</script>
+
+</body>
+</html>
