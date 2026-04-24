@@ -666,19 +666,21 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot,
-  limit, deleteDoc, doc, getDocs, updateDoc, setDoc, getDoc, arrayUnion, connectFirestoreEmulator
+  limit, deleteDoc, doc, getDocs, updateDoc, setDoc, getDoc, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// ============ NOVAS CONFIGURAÇÕES DO FIREBASE ============
 const firebaseConfig = {
-  apiKey: "AIzaSyCyOdEV7GfcOqVCYLlp8LMD_0Y8Y6HTTJg",
-  authDomain: "chat-global-665c0.firebaseapp.com",
-  projectId: "chat-global-665c0",
-  storageBucket: "chat-global-665c0.firebasestorage.app",
-  messagingSenderId: "484426308227",
-  appId: "1:484426308227:web:6a8f95b90eb61a97d3d9b6"
+  apiKey: "AIzaSyCAEcf-BcAtcGMqdGIUrC-vbqnrQLeBEgw",
+  authDomain: "chat-apk-9f174.firebaseapp.com",
+  projectId: "chat-apk-9f174",
+  storageBucket: "chat-apk-9f174.firebasestorage.app",
+  messagingSenderId: "131626065583",
+  appId: "1:131626065583:web:c7a00bafc01cde0af77e5a",
+  measurementId: "G-Y2FRT0SVVE"
 };
 
-// Inicializar Firebase com tratamento de erro
+// Inicializar Firebase
 let app, db;
 let firebaseConnected = false;
 
@@ -686,7 +688,8 @@ try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
   firebaseConnected = true;
-  console.log("✅ Firebase conectado!");
+  console.log("✅ Firebase conectado com sucesso!");
+  document.getElementById("loginError").style.display = "none";
 } catch (error) {
   console.error("❌ Erro ao conectar Firebase:", error);
   firebaseConnected = false;
@@ -858,7 +861,13 @@ function listenTyping() {
 
     if (typingNames.length > 0) {
       typingBox.style.display = "block";
-      typingBox.textContent = typingNames[0] + " está digitando...";
+      if (typingNames.length === 1) {
+        typingBox.textContent = typingNames[0] + " está digitando...";
+      } else if (typingNames.length === 2) {
+        typingBox.textContent = typingNames[0] + " e " + typingNames[1] + " estão digitando...";
+      } else {
+        typingBox.textContent = typingNames.length + " pessoas estão digitando...";
+      }
     } else {
       typingBox.style.display = "none";
     }
@@ -1113,11 +1122,26 @@ function playNotification() {
 function loadMessages() {
   if (!firebaseConnected) return;
   
-  const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(120));
+  const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(200));
 
   onSnapshot(q, snapshot => {
     messagesBox.innerHTML = "";
 
+    // Verificar novas mensagens
+    if (snapshot.size > lastSnapshotSize && lastSnapshotSize !== 0) {
+      playNotification();
+    }
+    lastSnapshotSize = snapshot.size;
+
+    if (snapshot.empty) {
+      const empty = document.createElement("div");
+      empty.className = "system-message";
+      empty.textContent = "✨ Nenhuma mensagem ainda. Seja o primeiro!";
+      messagesBox.appendChild(empty);
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+      return;
+    }
+    
     const day = document.createElement("div");
     day.className = "day-label";
     day.textContent = "Hoje";
@@ -1233,11 +1257,6 @@ function loadMessages() {
       messagesBox.appendChild(row);
     });
 
-    if (snapshot.size > lastSnapshotSize && lastSnapshotSize !== 0) {
-      playNotification();
-    }
-
-    lastSnapshotSize = snapshot.size;
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }, (error) => {
     console.error("Erro ao carregar mensagens:", error);
