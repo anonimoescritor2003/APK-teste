@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-<title>CHAT BRASIL - Moderno + Privado + Visto</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chat Brasil - Número de Celular</title>
 <style>
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-
   :root {
     --primary: #00875f;
     --primary-dark: #006b48;
@@ -29,14 +27,12 @@
     --transition: all 0.2s ease;
     --sidebar-width: 360px;
   }
-
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: var(--background);
     color: var(--text);
     transition: var(--transition);
   }
-
   body.dark {
     --background: #0a1014;
     --surface: #1e2a32;
@@ -46,7 +42,6 @@
     --sent-bubble: #005c4b;
     --received-bubble: #202c33;
   }
-
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
@@ -103,6 +98,7 @@
   .login-card input {
     width: 100%; padding: 14px 18px; border-radius: 16px; border: 1.5px solid var(--border);
     margin: 8px 0; font-size: 15px; background: var(--surface); color: var(--text);
+    text-align: center;
   }
   .login-card input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 135, 95, 0.15); }
   .enter-btn {
@@ -217,7 +213,21 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
   .message.received { background: var(--received-bubble); color: var(--text); align-self: flex-start; border-top-left-radius: 4px; }
   .message.sent { background: var(--sent-bubble); color: var(--text); align-self: flex-end; border-top-right-radius: 4px; }
-  .sender-name { font-size: 12px; color: var(--primary-light); margin-bottom: 4px; font-weight: bold; }
+  .sender-name {
+    font-size: 12px;
+    color: var(--primary-light);
+    margin-bottom: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 12px;
+    transition: background 0.2s;
+  }
+  .sender-name:hover {
+    background: rgba(0,135,95,0.1);
+    text-decoration: underline;
+  }
   .message-footer {
     display: flex;
     justify-content: flex-end;
@@ -233,7 +243,7 @@
   }
   .status-sent { color: var(--text-light); }
   .status-delivered { color: var(--text-light); }
-  .status-read { color: #53bdeb; } /* azul */
+  .status-read { color: #53bdeb; }
   body.dark .status-read { color: #53bdeb; }
 
   .input-area {
@@ -262,7 +272,6 @@
   .modal-content button { width: 100%; padding: 14px; border-radius: 14px; margin-top: 8px; font-weight: 600; cursor: pointer; border: none; background: var(--primary); color: white; }
   .close-btn { background: var(--border); color: var(--text); }
   .admin-action { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
-  .pinned-message-bar { background: var(--primary); color: white; padding: 10px 16px; font-size: 12px; text-align: center; display: flex; justify-content: space-between; align-items: center; z-index: 9; position: sticky; top: 72px; }
   .connection-status { position: fixed; bottom: 20px; right: 20px; background: #ff4d4d; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; z-index: 15; display: none; }
   .retry-btn { background: var(--primary); border: none; color: white; padding: 4px 12px; border-radius: 20px; cursor: pointer; margin-left: 10px; }
   .toast-notification {
@@ -276,43 +285,58 @@
     85% { opacity: 1; transform: translateX(-50%) translateY(0); }
     100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
   }
-
+  .copy-number-btn {
+    background: rgba(0, 135, 95, 0.12);
+    color: var(--primary);
+    border: none;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
   @media (max-width: 700px) {
     .sidebar {
-      position: absolute; left: 0; top: 0; height: 100%; z-index: 20;
-      transition: transform 0.3s ease; width: var(--sidebar-width);
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      z-index: 20;
+      transition: transform 0.3s ease;
+      width: var(--sidebar-width);
       transform: translateX(-100%);
     }
     .sidebar:not(.collapsed) { transform: translateX(0); }
     .sidebar.collapsed { transform: translateX(-100%); width: var(--sidebar-width); }
-    .menu-toggle { display: block; }
+    .menu-toggle { display: flex; }
   }
-  @media (min-width: 701px) { .menu-toggle { display: none; } }
+  @media (min-width: 701px) {
+    .menu-toggle { display: flex; }
+  }
 </style>
 </head>
-
 <body>
-
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
-    <h1>✨ Fórmula APK</h1>
-    <div class="subtitle">Conecte-se com o mundo</div>
+    <h1>✨ Chat Brasil</h1>
+    <div class="subtitle">Conecte-se com seu número</div>
     <div class="photo-picker">
       <div class="profile-photo" id="profilePhoto" onclick="document.getElementById('photoInput').click()">
         <span id="photoPreviewEmoji">📷</span>
       </div>
-      <button type="button" class="photo-btn" onclick="document.getElementById('photoInput').click()">📷 Escolher foto da galeria</button>
+      <button type="button" class="photo-btn" onclick="document.getElementById('photoInput').click()">📷 Escolher foto</button>
       <input type="file" id="photoInput" class="file-input" accept="image/*" />
     </div>
-    <input type="text" id="nameInput" placeholder="Seu apelido" />
-    <button class="enter-btn" onclick="window.enterChat()">🚀 ENTRAR NO CHAT</button>
+    <input type="tel" id="phoneInput" placeholder="(DDD) 9 9999-9999" />
+    <input type="text" id="nameInput" placeholder="Seu nome" />
+    <button class="enter-btn" onclick="window.enterChat()">🚀 ENTRAR</button>
     <div id="loginError" class="error-msg"></div>
   </div>
 </div>
 
 <div class="chat-screen" id="chatScreen">
   <div class="chat-header">
-    <button class="menu-toggle" id="toggleSidebarBtn" title="Mostrar/Esconder conversas">⋮</button>
+    <button class="menu-toggle" id="toggleSidebarBtn">⋮</button>
     <div class="avatar" id="userAvatar">APK</div>
     <div class="header-info">
       <div class="header-title">Chat Global</div>
@@ -320,12 +344,11 @@
     </div>
     <div class="header-actions">
       <button class="icon-btn" onclick="window.toggleTheme()">🌙</button>
-      <button class="icon-btn" id="silentModeBtn" onclick="window.toggleSilentMode()" title="Modo Silencioso">🔔</button>
+      <button class="icon-btn" id="silentModeBtn" onclick="window.toggleSilentMode()">🔔</button>
       <button class="icon-btn" onclick="window.openAdmin()">👑</button>
       <button class="icon-btn" onclick="window.logout()">🚪</button>
     </div>
   </div>
-
   <div style="display: flex; flex: 1; overflow: hidden;">
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -334,6 +357,10 @@
           <div class="user-info">
             <input type="text" id="nicknameInput" maxlength="25" />
             <button class="edit-photo-btn" onclick="window.changePhoto()">📷 Trocar foto</button>
+            <div style="font-size: 10px; color: var(--text-light); margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+              <span>📞 <span id="myPhoneDisplay">---</span></span>
+              <button class="copy-number-btn" onclick="window.copyMyPhone()">📋 Copiar número</button>
+            </div>
           </div>
         </div>
       </div>
@@ -342,11 +369,10 @@
         <div class="tab-btn" data-tab="private">🔒 Conversas Privadas</div>
       </div>
       <div class="search-area">
-        <input type="text" id="searchInput" placeholder="Pesquisar conversa..." />
+        <input type="text" id="searchInput" placeholder="Pesquisar por nome ou número..." />
       </div>
       <div class="chat-list" id="chatList"></div>
     </div>
-
     <main class="main">
       <div class="messages-area" id="messagesArea">
         <div style="text-align: center; color:#8696a0; padding: 40px;">Selecione uma conversa</div>
@@ -390,15 +416,26 @@
 <div class="modal" id="newPrivateModal">
   <div class="modal-content">
     <h3>🔒 Nova conversa privada</h3>
-    <input type="text" id="privateContactName" placeholder="Apelido do contato ou e-mail">
-    <button onclick="window.createPrivateChat()">Iniciar conversa</button>
+    <p style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">Digite o <strong>número de celular</strong> da pessoa:</p>
+    <input type="tel" id="privatePhoneInput" placeholder="(DDD) 9 9999-9999">
+    <button onclick="window.createPrivateChatByPhone()">Iniciar conversa</button>
     <button class="close-btn" onclick="window.closePrivateModal()">Cancelar</button>
   </div>
 </div>
 
-<div class="connection-status" id="connectionStatus">
-  ⚠️ Erro de conexão <button class="retry-btn" onclick="location.reload()">Tentar</button>
+<div class="modal" id="userPhoneModal">
+  <div class="modal-content">
+    <h3>📞 Número do usuário</h3>
+    <p style="margin-bottom: 16px;">Copie o número abaixo para chamar no privado:</p>
+    <div style="background: var(--background); padding: 12px; border-radius: 12px; margin-bottom: 16px; word-break: break-all;">
+      <span id="userPhoneModalValue" style="font-family: monospace; font-size: 16px;"></span>
+    </div>
+    <button onclick="window.copyModalPhone()">📋 Copiar número</button>
+    <button class="close-btn" onclick="window.closePhoneModal()">Fechar</button>
+  </div>
 </div>
+
+<div class="connection-status" id="connectionStatus">⚠️ Erro <button class="retry-btn" onclick="location.reload()">Tentar</button></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -428,8 +465,6 @@ let isAdmin = false;
 let replyingTo = null;
 let typingTimer = null;
 let modoSilencioso = localStorage.getItem("modoSilencioso") === "true";
-let notificationEnabled = false;
-let audio = null;
 
 // Elementos
 const loginScreen = document.getElementById("loginScreen");
@@ -455,6 +490,8 @@ const chatListDiv = document.getElementById("chatList");
 const inputArea = document.getElementById("inputArea");
 const sidebar = document.getElementById("sidebar");
 const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
+const myPhoneDisplay = document.getElementById("myPhoneDisplay");
+const userPhoneModalValue = document.getElementById("userPhoneModalValue");
 
 const ADMIN_PASSWORD = "121103";
 
@@ -535,6 +572,8 @@ async function initFirebase() {
     console.error("Erro Firebase:", error);
     firebaseConnected = false;
     connectionStatusDiv.style.display = "block";
+    document.getElementById("loginError").textContent = "Erro de conexão. Recarregue.";
+    document.getElementById("loginError").style.display = "block";
   }
 }
 
@@ -545,8 +584,12 @@ async function startApp() {
   userAvatar.innerHTML = currentUser.avatar ? `<img src="${currentUser.avatar}">` : currentUser.name.charAt(0).toUpperCase();
   nicknameInput.value = currentUser.name;
   myAvatar.innerHTML = currentUser.avatar ? `<img src="${currentUser.avatar}">` : currentUser.name.charAt(0).toUpperCase();
+  myPhoneDisplay.textContent = currentUser.phone;
   onlineStatus.textContent = `● ${currentUser.name}`;
-  await setDoc(doc(db, "onlineUsers", currentUser.id), {
+  await setDoc(doc(db, "users", currentUser.phone), {
+    name: currentUser.name, avatar: currentUser.avatar, phone: currentUser.phone, createdAt: serverTimestamp()
+  });
+  await setDoc(doc(db, "onlineUsers", currentUser.phone), {
     name: currentUser.name, avatar: currentUser.avatar, online: true, lastSeen: serverTimestamp()
   });
   setupTabs();
@@ -579,7 +622,7 @@ function setupTabs() {
   });
 }
 
-// ================= CHAT GLOBAL (sem alterações) =================
+// Chat Global (clique no nome mostra o número)
 function loadGlobalChat() {
   if (globalMessagesUnsubscribe) globalMessagesUnsubscribe();
   const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(200));
@@ -594,9 +637,16 @@ function loadGlobalChat() {
         const sys = document.createElement("div"); sys.className = "system-message"; sys.textContent = msg.text; messagesArea.appendChild(sys);
         return;
       }
-      const isMine = msg.userId === currentUser.id;
+      const isMine = msg.userPhone === currentUser.phone;
       const div = document.createElement("div"); div.className = `message ${isMine ? "sent" : "received"}`;
-      if (!isMine && msg.name) { const sender = document.createElement("div"); sender.className = "sender-name"; sender.textContent = msg.name; div.appendChild(sender); }
+      if (!isMine && msg.name) {
+        const senderDiv = document.createElement("div"); senderDiv.className = "sender-name";
+        senderDiv.textContent = msg.name;
+        senderDiv.title = "Clique para copiar o número";
+        senderDiv.style.cursor = "pointer";
+        senderDiv.onclick = () => window.showPhoneModal(msg.userPhone, msg.name);
+        div.appendChild(senderDiv);
+      }
       const textDiv = document.createElement("div"); textDiv.className = "message-text"; textDiv.textContent = msg.text;
       const timeDiv = document.createElement("div"); timeDiv.className = "message-time"; timeDiv.textContent = time;
       div.appendChild(textDiv); div.appendChild(timeDiv);
@@ -624,10 +674,26 @@ function renderGlobalChatList() {
   });
 }
 
-// ================= CHAT PRIVADO COM SISTEMA DE VISTO =================
+// Modal de número
+let currentModalPhone = "";
+window.showPhoneModal = function(phone, name) {
+  currentModalPhone = phone;
+  userPhoneModalValue.textContent = phone;
+  document.getElementById("userPhoneModal").style.display = "flex";
+};
+window.copyModalPhone = function() {
+  navigator.clipboard.writeText(currentModalPhone);
+  showToast("Número copiado! Use na aba Privada.");
+  closePhoneModal();
+};
+window.closePhoneModal = function() {
+  document.getElementById("userPhoneModal").style.display = "none";
+};
+
+// Chat Privado (usando números)
 async function loadPrivateChatsList() {
   const chatsRef = collection(db, "privateChats");
-  const q = query(chatsRef, where("participants", "array-contains", currentUser.id));
+  const q = query(chatsRef, where("participants", "array-contains", currentUser.phone));
   if (unsubscribePrivateChats) unsubscribePrivateChats();
   unsubscribePrivateChats = onSnapshot(q, () => {
     if (currentMode === "private") renderPrivateChatList();
@@ -636,18 +702,18 @@ async function loadPrivateChatsList() {
 async function renderPrivateChatList() {
   const searchTerm = searchInput.value.toLowerCase();
   const chatsRef = collection(db, "privateChats");
-  const q = query(chatsRef, where("participants", "array-contains", currentUser.id));
+  const q = query(chatsRef, where("participants", "array-contains", currentUser.phone));
   const snapshot = await getDocs(q);
   let chats = [];
   for (const docSnap of snapshot.docs) {
     const data = docSnap.data();
-    const otherId = data.participants.find(p => p !== currentUser.id);
-    let otherName = otherId;
+    const otherPhone = data.participants.find(p => p !== currentUser.phone);
+    let otherName = otherPhone;
     let otherAvatar = "";
-    const userDoc = await getDoc(doc(db, "users", otherId));
+    const userDoc = await getDoc(doc(db, "users", otherPhone));
     if (userDoc.exists()) { otherName = userDoc.data().name; otherAvatar = userDoc.data().avatar; }
-    if (!searchTerm || otherName.toLowerCase().includes(searchTerm)) {
-      chats.push({ id: docSnap.id, name: otherName, avatar: otherAvatar, lastMessage: data.lastMessage || "", lastTime: data.lastTime || "", unread: data.unread?.[currentUser.id] || 0 });
+    if (!searchTerm || otherName.toLowerCase().includes(searchTerm) || otherPhone.includes(searchTerm)) {
+      chats.push({ id: docSnap.id, name: otherName, avatar: otherAvatar, lastMessage: data.lastMessage || "", lastTime: data.lastTime || "", unread: data.unread?.[currentUser.phone] || 0 });
     }
   }
   chatListDiv.innerHTML = chats.map(chat => `
@@ -680,9 +746,9 @@ async function selectPrivateChat(chatId) {
   const chatDoc = await getDoc(doc(db, "privateChats", chatId));
   if (!chatDoc.exists()) return;
   const data = chatDoc.data();
-  const otherId = data.participants.find(p => p !== currentUser.id);
-  const userDoc = await getDoc(doc(db, "users", otherId));
-  const otherName = userDoc.exists() ? userDoc.data().name : otherId;
+  const otherPhone = data.participants.find(p => p !== currentUser.phone);
+  const userDoc = await getDoc(doc(db, "users", otherPhone));
+  const otherName = userDoc.exists() ? userDoc.data().name : otherPhone;
   document.querySelector(".header-title").innerHTML = otherName;
   document.querySelector(".header-status").innerHTML = "Conversa privada";
   inputArea.style.display = "flex";
@@ -692,25 +758,22 @@ async function selectPrivateChat(chatId) {
   unsubscribeMessages = onSnapshot(qMsg, async (snapshot) => {
     const wasAtBottom = messagesArea.scrollHeight - messagesArea.scrollTop <= messagesArea.clientHeight + 100;
     messagesArea.innerHTML = "";
-    // Marcar mensagens como lidas ao abrir a conversa
     const updates = [];
     snapshot.forEach(docMsg => {
       const msg = docMsg.data();
-      if (msg.senderId !== currentUser.id && (!msg.readBy || !msg.readBy.includes(currentUser.id))) {
+      if (msg.senderPhone !== currentUser.phone && (!msg.readBy || !msg.readBy.includes(currentUser.phone))) {
         updates.push(updateDoc(doc(db, "privateChats", chatId, "messages", docMsg.id), {
           status: "read",
-          readBy: arrayUnion(currentUser.id)
+          readBy: arrayUnion(currentUser.phone)
         }));
       }
     });
     if (updates.length) await Promise.all(updates);
-    // Atualizar contagem de não lidas do chat
-    await updateDoc(doc(db, "privateChats", chatId), { [`unread.${currentUser.id}`]: 0 });
-    // Renderizar mensagens
+    await updateDoc(doc(db, "privateChats", chatId), { [`unread.${currentUser.phone}`]: 0 });
     snapshot.forEach(docMsg => {
       const msg = docMsg.data();
       const time = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"}) : "";
-      const isMine = msg.senderId === currentUser.id;
+      const isMine = msg.senderPhone === currentUser.phone;
       const div = document.createElement("div"); div.className = `message ${isMine ? "sent" : "received"}`;
       if (!isMine && msg.senderName) { const sender = document.createElement("div"); sender.className = "sender-name"; sender.textContent = msg.senderName; div.appendChild(sender); }
       const textDiv = document.createElement("div"); textDiv.className = "message-text"; textDiv.textContent = msg.text;
@@ -723,7 +786,6 @@ async function selectPrivateChat(chatId) {
         let statusClass = "status-sent";
         if (msg.status === "delivered") { statusIcon = "✓✓"; statusClass = "status-delivered"; }
         else if (msg.status === "read") { statusIcon = "✓✓"; statusClass = "status-read"; }
-        else { statusIcon = "✓"; statusClass = "status-sent"; }
         statusSpan.innerHTML = statusIcon;
         statusSpan.className = `message-status ${statusClass}`;
         footer.appendChild(statusSpan);
@@ -733,13 +795,10 @@ async function selectPrivateChat(chatId) {
       messagesArea.appendChild(div);
     });
     if (wasAtBottom) messagesArea.scrollTop = messagesArea.scrollHeight;
-    // marcar mensagens como entregues (delivered) se for o destinatário e ainda não foi
     snapshot.forEach(docMsg => {
       const msg = docMsg.data();
-      if (msg.senderId !== currentUser.id && (!msg.status || msg.status === "sent")) {
-        updateDoc(doc(db, "privateChats", chatId, "messages", docMsg.id), {
-          status: "delivered"
-        });
+      if (msg.senderPhone !== currentUser.phone && (!msg.status || msg.status === "sent")) {
+        updateDoc(doc(db, "privateChats", chatId, "messages", docMsg.id), { status: "delivered" });
       }
     });
   });
@@ -748,7 +807,7 @@ window.sendMessage = async function() {
   if (currentMode === "global") {
     let text = messageInput.value.trim();
     if (!text) return;
-    const messageData = { name: currentUser.name, userId: currentUser.id, text: text, type: "normal", createdAt: serverTimestamp() };
+    const messageData = { name: currentUser.name, userPhone: currentUser.phone, text: text, type: "normal", createdAt: serverTimestamp() };
     if (currentUser.avatar && currentUser.avatar.length < 50000) messageData.avatar = currentUser.avatar;
     if (replyingTo) messageData.replyTo = replyingTo;
     await addDoc(collection(db, "messages"), messageData);
@@ -760,82 +819,99 @@ window.sendMessage = async function() {
     const messagesRef = collection(chatRef, "messages");
     await addDoc(messagesRef, {
       text: text,
-      senderId: currentUser.id,
+      senderPhone: currentUser.phone,
       senderName: currentUser.name,
       timestamp: serverTimestamp(),
       status: "sent",
-      readBy: [currentUser.id]
+      readBy: [currentUser.phone]
     });
     await updateDoc(chatRef, {
       lastMessage: text,
       lastTime: new Date().toLocaleTimeString(),
-      [`unread.${currentUser.id}`]: 0,
-      [`unread.${currentChatId.split('_')[1]}`]: incrementUnread? true : false // será atualizado pelo listener
+      [`unread.${currentUser.phone}`]: 0
     });
-    // Incrementar contagem de não lidas para o destinatário
     const chatData = (await getDoc(chatRef)).data();
-    const otherId = chatData.participants.find(p => p !== currentUser.id);
+    const otherPhone = chatData.participants.find(p => p !== currentUser.phone);
     await updateDoc(chatRef, {
-      [`unread.${otherId}`]: (chatData.unread?.[otherId] || 0) + 1
+      [`unread.${otherPhone}`]: (chatData.unread?.[otherPhone] || 0) + 1
     });
     messageInput.value = ""; cancelReply();
   }
 };
 
-function incrementUnread(chatId, userId) {
-  // função auxiliar
-}
-
-window.openPrivateModal = function() { document.getElementById("newPrivateModal").style.display = "flex"; };
-window.closePrivateModal = function() { document.getElementById("newPrivateModal").style.display = "none"; };
-window.createPrivateChat = async function() {
-  const contactName = document.getElementById("privateContactName").value.trim();
-  if (!contactName) return alert("Digite o nome do contato");
-  const usersRef = collection(db, "users");
-  const qUsers = query(usersRef, where("name", "==", contactName));
-  const snap = await getDocs(qUsers);
-  let contactId = null;
-  if (snap.empty) {
-    contactId = "user_" + Date.now() + "_" + Math.random().toString(36).substr(2,6);
-    await setDoc(doc(db, "users", contactId), { name: contactName, avatar: "", createdAt: serverTimestamp() });
-  } else {
-    contactId = snap.docs[0].id;
-  }
+window.openPrivateModal = function() {
+  document.getElementById("privatePhoneInput").value = "";
+  document.getElementById("newPrivateModal").style.display = "flex";
+};
+window.closePrivateModal = function() {
+  document.getElementById("newPrivateModal").style.display = "none";
+};
+window.createPrivateChatByPhone = async function() {
+  let phone = document.getElementById("privatePhoneInput").value.trim();
+  if (!phone) return alert("Digite o número de celular");
+  phone = phone.replace(/\D/g, '');
+  if (phone.length < 10) return alert("Número inválido. Use DDD + 9 dígitos");
+  if (phone === currentUser.phone) { alert("Não pode conversar consigo mesmo"); return; }
+  const userDoc = await getDoc(doc(db, "users", phone));
+  if (!userDoc.exists()) { alert("Número não cadastrado. Peça para a pessoa se cadastrar primeiro."); return; }
+  const contactName = userDoc.data().name;
   const chatsRef = collection(db, "privateChats");
-  const existing = await getDocs(query(chatsRef, where("participants", "array-contains", currentUser.id)));
+  const existing = await getDocs(query(chatsRef, where("participants", "array-contains", currentUser.phone)));
   let already = false;
-  existing.forEach(d => { if (d.data().participants.includes(contactId)) already = true; });
+  existing.forEach(d => { if (d.data().participants.includes(phone)) already = true; });
   if (already) { alert("Você já tem uma conversa com esse contato!"); closePrivateModal(); return; }
   const chatId = `priv_${Date.now()}`;
   await setDoc(doc(db, "privateChats", chatId), {
-    participants: [currentUser.id, contactId],
+    participants: [currentUser.phone, phone],
     createdAt: serverTimestamp(),
-    unread: { [currentUser.id]: 0, [contactId]: 0 }
+    unread: { [currentUser.phone]: 0, [phone]: 0 }
   });
   closePrivateModal();
-  showToast("Conversa criada! Selecione na aba Privado.");
+  showToast(`Conversa com ${contactName} criada!`);
   if (currentMode !== "private") document.querySelector(".tab-btn[data-tab='private']").click();
   await loadPrivateChatsList();
 };
+window.copyMyPhone = function() {
+  navigator.clipboard.writeText(currentUser.phone);
+  showToast("Seu número copiado! Compartilhe com quem quiser conversar.");
+};
 
-// Funções originais mantidas
+// Funções auxiliares
 window.toggleTheme = function() { document.body.classList.toggle("dark"); localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light"); };
 window.toggleSilentMode = function() { modoSilencioso = !modoSilencioso; localStorage.setItem("modoSilencioso", modoSilencioso); atualizarIconeModoSilencioso(); alert(modoSilencioso ? "🔇 Modo silencioso ativado" : "🔔 Modo normal ativado"); };
-window.changePhoto = function() { const input = document.createElement("input"); input.type = "file"; input.accept = "image/*"; input.onchange = async (e) => { const file = e.target.files[0]; if(file){ const reader = new FileReader(); reader.onload = async (ev) => { const opt = await resizeImage(ev.target.result); currentUser.avatar = opt; localStorage.setItem("chatUser", JSON.stringify(currentUser)); myAvatar.innerHTML = `<img src="${opt}">`; userAvatar.innerHTML = `<img src="${opt}">`; }; reader.readAsDataURL(file); } }; input.click(); };
-nicknameInput.addEventListener("change", () => { if (nicknameInput.value.trim()) { currentUser.name = nicknameInput.value.trim(); localStorage.setItem("chatUser", JSON.stringify(currentUser)); onlineStatus.textContent = `● ${currentUser.name}`; } });
+window.changePhoto = function() { const input = document.createElement("input"); input.type = "file"; input.accept = "image/*"; input.onchange = async (e) => { const file = e.target.files[0]; if(file){ const reader = new FileReader(); reader.onload = async (ev) => { const opt = await resizeImage(ev.target.result); currentUser.avatar = opt; localStorage.setItem("chatUser", JSON.stringify(currentUser)); await updateDoc(doc(db, "users", currentUser.phone), { avatar: opt }); myAvatar.innerHTML = `<img src="${opt}">`; userAvatar.innerHTML = `<img src="${opt}">`; }; reader.readAsDataURL(file); } }; input.click(); };
+nicknameInput.addEventListener("change", async () => { if (nicknameInput.value.trim()) { currentUser.name = nicknameInput.value.trim(); localStorage.setItem("chatUser", JSON.stringify(currentUser)); await updateDoc(doc(db, "users", currentUser.phone), { name: currentUser.name }); onlineStatus.textContent = `● ${currentUser.name}`; } });
 window.cancelReply = function() { replyingTo = null; replyPreview.style.display = "none"; };
 window.startReply = function(id, name, text) { replyingTo = { id, name, text }; replyPreview.style.display = "block"; replyPreviewName.textContent = "Respondendo " + name; replyPreviewText.textContent = text; messageInput.focus(); };
-window.enterChat = async function() { const name = document.getElementById("nameInput").value.trim(); if (!name) { document.getElementById("loginError").textContent = "Digite seu apelido!"; document.getElementById("loginError").style.display = "block"; return; } if (name.length < 3) { document.getElementById("loginError").textContent = "Mínimo 3 letras!"; return; } const avatarBase64 = window.selectedPhotoBase64 || ""; currentUser = { id: "user_" + Date.now() + "_" + Math.random().toString(36).substr(2,6), name: name, avatar: avatarBase64 }; localStorage.setItem("chatUser", JSON.stringify(currentUser)); await setDoc(doc(db, "users", currentUser.id), { name: currentUser.name, avatar: currentUser.avatar, createdAt: serverTimestamp() }); await addDoc(collection(db, "messages"), { name: "📢 Sistema", text: currentUser.name + " entrou no chat.", type: "system", createdAt: serverTimestamp() }); startApp(); };
+window.enterChat = async function() {
+  const phoneRaw = document.getElementById("phoneInput").value.trim();
+  const name = document.getElementById("nameInput").value.trim();
+  if (!phoneRaw) { document.getElementById("loginError").textContent = "Digite seu número!"; document.getElementById("loginError").style.display = "block"; return; }
+  if (!name) { document.getElementById("loginError").textContent = "Digite seu nome!"; return; }
+  if (name.length < 3) { document.getElementById("loginError").textContent = "Mínimo 3 letras!"; return; }
+  const phone = phoneRaw.replace(/\D/g, '');
+  if (phone.length < 10) { document.getElementById("loginError").textContent = "Número inválido!"; return; }
+  const avatarBase64 = window.selectedPhotoBase64 || "";
+  currentUser = { phone: phone, name: name, avatar: avatarBase64 };
+  localStorage.setItem("chatUser", JSON.stringify(currentUser));
+  if (!firebaseConnected) {
+    document.getElementById("loginError").textContent = "Aguardando conexão...";
+    return;
+  }
+  await setDoc(doc(db, "users", phone), { name: name, avatar: avatarBase64, phone: phone, createdAt: serverTimestamp() });
+  await addDoc(collection(db, "messages"), { name: "📢 Sistema", text: name + " entrou no chat.", type: "system", createdAt: serverTimestamp() });
+  startApp();
+};
 window.logout = function() { localStorage.clear(); location.reload(); };
 window.openAdmin = function() { document.getElementById("adminModal").style.display = "flex"; adminTools.style.display = "none"; document.getElementById("adminPass").value = ""; };
 window.closeAdmin = function() { document.getElementById("adminModal").style.display = "none"; };
 window.loginAdmin = function() { const pass = document.getElementById("adminPass").value; if (pass === ADMIN_PASSWORD) { isAdmin = true; adminTools.style.display = "block"; adminStatus.innerHTML = "✅ Admin logado!"; alert("Modo Admin ativado"); } else { alert("Senha incorreta"); } };
 window.banByName = async function() { if (!isAdmin) return; const name = document.getElementById("banNameInput").value.trim(); if (!name) return; await setDoc(doc(db, "bans", "name_" + name.toLowerCase()), { type: "name", name: name, createdAt: serverTimestamp() }); alert("✅ Apelido banido!"); };
 window.clearChat = async function() { if (!isAdmin || !confirm("Apagar TODAS as mensagens globais?")) return; const q = query(collection(db, "messages"), limit(300)); const snap = await getDocs(q); snap.forEach(d => deleteDoc(doc(db, "messages", d.id))); alert("Chat global limpo!"); };
-function listenTyping() { onSnapshot(collection(db, "typingUsers"), (snap) => { let names = []; snap.forEach(d => { if(d.id !== currentUser.id && d.data().typing) names.push(d.data().name); }); if (names.length && !modoSilencioso) { typingBox.style.display = "block"; typingBox.textContent = names[0] + (names.length>1?" e outros ":"") + " digitando..."; } else typingBox.style.display = "none"; }); }
+function listenTyping() { onSnapshot(collection(db, "typingUsers"), (snap) => { let names = []; snap.forEach(d => { if(d.id !== currentUser.phone && d.data().typing) names.push(d.data().name); }); if (names.length && !modoSilencioso) { typingBox.style.display = "block"; typingBox.textContent = names[0] + (names.length>1?" e outros ":"") + " digitando..."; } else typingBox.style.display = "none"; }); }
 function listenOnlineUsers() { onSnapshot(collection(db, "onlineUsers"), (snap) => { let count = 0; snap.forEach(d => { if(d.data().online) count++; }); onlineStatus.textContent = `● ${count} online — ${currentUser.name}`; }); }
 photoInput.addEventListener("change", async (e) => { const file = e.target.files[0]; if(file){ const reader = new FileReader(); reader.onload = async (ev) => { const opt = await resizeImage(ev.target.result); window.selectedPhotoBase64 = opt; profilePhoto.innerHTML = `<img src="${opt}">`; }; reader.readAsDataURL(file); } });
-window.addEventListener("beforeunload", () => { if (currentUser) setDoc(doc(db, "onlineUsers", currentUser.id), { online: false }); });
+window.addEventListener("beforeunload", () => { if (currentUser) setDoc(doc(db, "onlineUsers", currentUser.phone), { online: false }); });
 initFirebase();
 </script>
 </body>
